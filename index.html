@@ -4,7 +4,69 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sijo Kuruvilla George — Resume</title>
+  <meta name="robots" content="noindex, nofollow">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" />
+  <style>
+    #pw-gate {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Open Sans', sans-serif;
+    }
+    #pw-gate .box {
+      text-align: center; padding: 40px; max-width: 320px; width: 100%;
+    }
+    #pw-gate h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; color: #111; }
+    #pw-gate p { font-size: 0.82rem; color: #777; margin-bottom: 24px; }
+    #pw-gate input {
+      width: 100%; padding: 10px 14px; font-size: 1rem;
+      border: 1px solid #ccc; border-radius: 4px; outline: none;
+      margin-bottom: 12px;
+    }
+    #pw-gate input:focus { border-color: #555; }
+    #pw-gate button {
+      width: 100%; padding: 10px; font-size: 0.95rem;
+      background: #2c2c2c; color: #fff; border: none;
+      border-radius: 4px; cursor: pointer;
+    }
+    #pw-gate .error { font-size: 0.8rem; color: #c00; margin-top: 8px; min-height: 1.2em; }
+  </style>
+  <script>
+    (function() {
+      const HASH = '3d4efa8264b0c9ddd8d2a3d213ffc08d3766c51ba7682df6163b67f88b197e8a';
+      const KEY = 'resume_auth';
+      async function sha256(str) {
+        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+        return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+      }
+      if (sessionStorage.getItem(KEY) === '1') return;
+      document.addEventListener('DOMContentLoaded', function() {
+        const gate = document.createElement('div');
+        gate.id = 'pw-gate';
+        gate.innerHTML = `<div class="box">
+          <h2>Sijo Kuruvilla George</h2>
+          <p>This page is private. Enter the password to continue.</p>
+          <input type="password" id="pw-input" placeholder="Password" autofocus />
+          <button id="pw-btn">Continue</button>
+          <div class="error" id="pw-err"></div>
+        </div>`;
+        document.body.prepend(gate);
+        async function attempt() {
+          const val = document.getElementById('pw-input').value;
+          const h = await sha256(val);
+          if (h === HASH) {
+            sessionStorage.setItem(KEY, '1');
+            gate.remove();
+          } else {
+            document.getElementById('pw-err').textContent = 'Incorrect password.';
+            document.getElementById('pw-input').select();
+          }
+        }
+        document.getElementById('pw-btn').addEventListener('click', attempt);
+        document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') attempt(); });
+      });
+    })();
+  </script>
   <style>
 
     /* ── Reset & base ── */
